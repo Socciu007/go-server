@@ -1,69 +1,35 @@
 package logger
 
 import (
-	"my_shop/pkg/setting"
-	"os"
-
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-	"gopkg.in/natefinch/lumberjack.v2"
+	"fmt"
+	"github.com/fatih/color"
 )
 
-type LoggerZap struct {
-	*zap.Logger
+var (
+	InfoLogger    = color.New(color.FgGreen).PrintfFunc()
+	ErrorLogger   = color.New(color.FgRed).PrintfFunc()
+	WarnLogger    = color.New(color.FgYellow).PrintfFunc()
+	DatabaseLogger = color.New(color.FgCyan).PrintfFunc()
+)
+
+func Info(format string, args ...interface{}) {
+	InfoLogger(format+"\n", args...)
 }
 
-func NewLogger(config setting.LoggerConfig) *LoggerZap {
-	logLever := config.LogLevel
-	//debug --> info --> warn --> error --> fatal --> panic
-	var lever zapcore.Level
-	switch logLever {
-		case "debug":
-            lever = zap.DebugLevel
-        case "info":
-            lever = zap.InfoLevel
-        case "warn":
-            lever = zap.WarnLevel
-        case "error":
-            lever = zap.ErrorLevel
-        case "fatal":
-            lever = zap.FatalLevel
-        default:
-            lever = zap.InfoLevel
-	}
-
-	encoder := getEncoderLog()
-	hook := lumberjack.Logger{
-		Filename: config.Filename,
-		MaxSize: config.MaxSize, // megabytes
-		MaxBackups: config.MaxBackups,
-		MaxAge: config.MaxAge, // dealine days to delete file
-		Compress: config.Compress, // disable compression
-	}
-	core := zapcore.NewCore(
-		encoder, 
-		zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(&hook)), 
-		lever,
-	)
-
-	return &LoggerZap{zap.New(core, zap.AddCaller(), zap.AddStacktrace(zap.ErrorLevel))}
+func Error(format string, args ...interface{}) {
+	ErrorLogger(format+"\n", args...)
 }
 
-//format logs of a message
-func getEncoderLog() zapcore.Encoder {
-	encodeConfig := zap.NewProductionEncoderConfig()
+func Warn(format string, args ...interface{}) {
+	WarnLogger(format+"\n", args...)
+}
 
-	// 176842932.877321 --> 2024-07-23T9:42:02.343+0700
-	encodeConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-
-	// ts --> time
-	encodeConfig.TimeKey = "time"
-
-	// from info INFO
-	encodeConfig.EncodeLevel = zapcore.CapitalLevelEncoder
-
-	// caller initalize/run.go
-	encodeConfig.EncodeCaller = zapcore.ShortCallerEncoder
-
-	return zapcore.NewJSONEncoder(encodeConfig)
+func DatabaseConnection(dbName string, stats map[string]string) {
+	DatabaseLogger("=== %s Connection Established ===\n", dbName)
+	if stats != nil {
+		for key, value := range stats {
+			DatabaseLogger("  %s: %s\n", key, value)
+		}
+		DatabaseLogger("===============================\n")
+	}
 }

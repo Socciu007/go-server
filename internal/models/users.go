@@ -11,8 +11,9 @@ type Users struct {
     ID        string    `gorm:"primaryKey"`
     Username  string    `gorm:"null" json:"username" validate:"max=50"`
     Email     string    `gorm:"unique;not null" json:"email" validate:"required,email"`
+    Phone     string    `gorm:"null" json:"phone" validate:"max=15"`
     Password  string    `gorm:"not null" json:"password" validate:"required,min=8"`
-    Role      string    `gorm:"default:Customer"`
+    Role      string    `gorm:"default:Student"`
     CreatedAt time.Time `gorm:"autoCreateTime"`
     UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }

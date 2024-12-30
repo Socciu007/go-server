@@ -8,8 +8,12 @@ import (
 func InitializeDB(db *gorm.DB) {
 	// Migrate your models here
 	db.AutoMigrate(
-		&Users{}, 
-		// &Product{}
+		&Users{},
+		&Students{},
+		&Tutors{},
+		&Courses{},
+		&Classes{},
+		&Finances{},
 	)
 
 	// Add associations if needed
@@ -19,6 +23,9 @@ func InitializeDB(db *gorm.DB) {
 // setupAssociations sets up associations between models.
 func SetupAssociations(db *gorm.DB) {
 	// Add associations between models here
-	// db.Model(&Store{}).Association("Products")
-	// db.Model(&Product{}).BelongsTo(&Store{})
+	db.Model(&Students{}).Association("Users")
+	db.Model(&Tutors{}).Association("Users")
+	db.Model(&Classes{}).Association("Tutors")
+	db.Model(&Classes{}).Association("Courses")
+	db.Model(&Finances{}).Association("Users")
 }

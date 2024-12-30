@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitMySQL() *repo.DatabaseType{
+func InitMySQL() *repo.DatabaseType {
 	mysqlConfig := global.Config.Mysql
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		mysqlConfig.Username,
@@ -26,13 +26,13 @@ func InitMySQL() *repo.DatabaseType{
 	}
 
 	// Set connection pool settings
-    sqlDB, err := db.DB()
-    if err != nil {
-        log.Fatalf("Failed to get sql.DB from gorm.DB: %v", err)
-    }
-    sqlDB.SetConnMaxLifetime(0)
-    sqlDB.SetMaxIdleConns(50)
-    sqlDB.SetMaxOpenConns(50)
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatalf("Failed to get sql.DB from gorm.DB: %v", err)
+	}
+	sqlDB.SetConnMaxLifetime(0)
+	sqlDB.SetMaxIdleConns(50)
+	sqlDB.SetMaxOpenConns(50)
 
 	sqlService := repo.NewSQLService(db)
 	log.Printf("MySQL connection established")
