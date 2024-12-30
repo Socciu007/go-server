@@ -24,12 +24,12 @@ func Run() {
 	mongoService := InitMongoDB()
 
 	// Initialize redis service
-	InitRedis()
+	// InitRedis()
 
 	// Check Redis connection
-	if !CheckRedisConnection() {
-		log.Fatal("Failed to connect to Redis")
-	}
+	// if !CheckRedisConnection() {
+	// 	log.Fatal("Failed to connect to Redis")
+	// }
 
 	// Close connections when done
 	defer func() {

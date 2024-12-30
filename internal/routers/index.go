@@ -12,6 +12,8 @@ import (
 func SetupRouter() *gin.Engine {
 	// create new instance without default middleware
 	router := gin.New()
+	// // Switch to "release" mode in production.
+	// gin.SetMode(gin.ReleaseMode)
 
 	// Add necessary middleware
 	router.Use(gin.Recovery()) // Helps applications recover after errors

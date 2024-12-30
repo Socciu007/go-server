@@ -7,8 +7,8 @@ security:
 
 mysql:
   username: root
-  password: 
-  dbname: my_shop
+  password: t0372072732@
+  dbname: db_server
   host: localhost
   port: 3306
 
