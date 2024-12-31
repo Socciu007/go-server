@@ -14,16 +14,16 @@ func UserRouter(r *gin.Engine) {
 	userService := services.NewUserService(global.GetDB)
 	userController := controllers.NewUserController(&userService)
 
-	userGroup := r.Group("/api/user")
+	userGroup := r.Group("/api/users")
 	{
-		userGroup.GET("/get-users", userController.GetAllUsers)
-		userGroup.GET("/get-user/:id", userController.GetUserByID)
-		userGroup.POST("/create-user", middlewares.ValidationUser(), userController.CreateUser)
-		userGroup.POST("/delete-users", userController.DeleteManyUsers)
-		userGroup.POST("/login", middlewares.ValidationCredentials(), userController.Login)
-		userGroup.POST("/logout", userController.Logout)
-		userGroup.POST("/refresh-token", userController.RefreshAccessToken)
-		userGroup.PATCH("/update-user/:id", userController.UpdateUser)
-		userGroup.DELETE("/delete-user/:id", userController.DeleteUser)
+		userGroup.GET("/", userController.GetAllUsers) // get all users
+		userGroup.GET("/:id", userController.GetUserByID) // get user by id
+		userGroup.POST("/register", middlewares.ValidationUser(), userController.CreateUser) // register user
+		userGroup.POST("/delete-users", userController.DeleteManyUsers) // delete many users
+		userGroup.POST("/login", middlewares.ValidationCredentials(), userController.Login) // login
+		userGroup.POST("/logout", userController.Logout) // logout
+		userGroup.POST("/refresh-token", userController.RefreshAccessToken) // refresh access token
+		userGroup.PATCH("/update/:id", userController.UpdateUser) // update user
+		userGroup.DELETE("/delete/:id", userController.DeleteUser) // delete user
 	}
 }

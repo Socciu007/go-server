@@ -10,11 +10,11 @@ import (
 // logs details of each incoming request and response
 func LoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
-        // Start time
+		// Start time
 		startTime := time.Now()
-		
+
 		// Process request
-        c.Next()
+		c.Next()
 
 		// End time
 		endTime := time.Now()
@@ -27,12 +27,38 @@ func LoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 		clientIP := c.ClientIP()
 
 		// Log details about the request
-		logger.Info("Logging request",
-			zap.String("method", c.Request.Method),
-			zap.String("url", c.Request.URL.Path),
-			zap.String("client_ip", clientIP),
-			zap.Int("status_code", statusCode),
-            zap.Duration("duration", latency),
-		)
-    }
+		if statusCode >= 200 && statusCode < 300 {
+			logger.Info("Request successful",
+				zap.String("method", c.Request.Method),
+				zap.String("url", c.Request.URL.Path),
+				zap.String("client_ip", clientIP),
+				zap.Int("status_code", statusCode),
+				zap.Duration("duration", latency),
+			)
+		} else if statusCode >= 400 && statusCode < 500 {
+			logger.Warn("Client error",
+				zap.String("method", c.Request.Method),
+				zap.String("url", c.Request.URL.Path),
+				zap.String("client_ip", clientIP),
+				zap.Int("status_code", statusCode),
+				zap.Duration("duration", latency),
+			)
+		} else if statusCode >= 500 {
+			logger.Error("Server error",
+				zap.String("method", c.Request.Method),
+				zap.String("url", c.Request.URL.Path),
+				zap.String("client_ip", clientIP),
+				zap.Int("status_code", statusCode),
+				zap.Duration("duration", latency),
+			)
+		} else {
+			logger.Info("Logging request",
+				zap.String("method", c.Request.Method),
+				zap.String("url", c.Request.URL.Path),
+				zap.String("client_ip", clientIP),
+				zap.Int("status_code", statusCode),
+				zap.Duration("duration", latency),
+			)
+		}
+	}
 }
